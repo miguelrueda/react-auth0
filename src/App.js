@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import Home from "./Home";
 import Profile from "./Profile";
 import Nav from "./Nav";
@@ -16,11 +16,15 @@ class App extends Component {
   render() {
     return (
       <>
-        <Nav />
+        <Nav auth={this.auth} />
         <div className="body">
           <Route path="/" exact render={props => <Home auth={this.auth} {...props}></Home>} />
           <Route path="/callback" render={props => <Callback auth={this.auth} {...props}></Callback>} />
-          <Route path="/profile" component={Profile} />
+          <Route path="/profile"
+            render={props => 
+              this.auth.isAuthenticated() ?
+              <Profile auth={this.auth} {...props}></Profile> :
+              <Redirect to="/"></Redirect> } />
         </div>
       </>
     );
